@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TouchMagicV2</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="heroName">HERO</string>
+    <string name="heroHP">-HP: </string>
+    <string name="enemyName">ENEMY</string>
+    <string name="enemyHP">-HP: </string>
+    <string name="ok">OK</string>
+    <string name="comment1"></string>
+    <string name="comment2"></string>
+    <string name="heroHPView">0</string>
+    <string name="enemyHPView">0</string>
+</resources>
