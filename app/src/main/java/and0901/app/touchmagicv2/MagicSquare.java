@@ -70,6 +70,8 @@ public class MagicSquare extends View {
 	private float 	cRadius,c1x,c2x,c3x,c4x,c1y,c2y,c3y,c4y;	//各サークルの大きさと座標
 	private float 	cCenter;									//サークルの中心点
 	private float blockLine1, blockLine2;						//上部中部下部の区切り位置
+    private float multiple1, multiple2;
+    private double multi1, multi2;
 	//バトル関連
 	int intHeroHP=1000, intEnemyHP=1000;				//DBから読んでくる、自分と相手のLVに応じたHP。
 	int backHeroHP, backEnemyHP;			//計算用のHP
@@ -87,7 +89,6 @@ public class MagicSquare extends View {
 	int i = 0;
 	//浮き上がるブロック
 	private ArrayList<Integer> block = new ArrayList<Integer>();
-	private float multiple;
 
 
 	//コンストラクタ
@@ -194,8 +195,10 @@ public class MagicSquare extends View {
 			canvas.drawLine(0, blockLine1+grid*9, width, blockLine1+grid*9, paint);
 			canvas.drawLine(width/2, blockLine1, width/2, blockLine2, paint);
 			//浮き上がるブロック描画
-			paint.setColor(Color.rgb(47, 79, 79));
-
+            if(touchNext!=1){
+                paint.setColor(Color.rgb(47, 79, 79));
+                canvas.drawRect(0+(int)multi1, blockLine1+(int)multi2, (int)multi1+grid, blockLine1+(int)multi2+grid, paint);
+            }
 			//サークル描画
 			paint.setColor(Color.RED);
 			if(touchNext!=0)
@@ -260,41 +263,41 @@ public class MagicSquare extends View {
 			x = event.getX();
 			y = event.getY();
 			//プレイヤーターンが続く場合
-			if(touchNext!=1){
-				//MagicSquareに入った場合
-				if(x>=0 && x<=height && y>blockLine1 && y<blockLine2){
-					//タッチの座標を取得--赤
-					xrd = event.getX();
-					yrd = event.getY();
-					//タッチの座標を取得--緑
-					xgr = event.getX();
-					ygr = event.getY();
-					//タッチの座標を取得--茶
-					xbr = event.getX();
-					ybr = event.getY();
-					//タッチの座標を取得--青
-					xbl = event.getX();
-					ybl = event.getY();
+			if(touchNext!=1) {
+                //MagicSquareに入った場合
+                if (x >= 0 && x <= height && y > blockLine1 && y < blockLine2) {
+                    //タッチの座標を取得--赤
+                    xrd = event.getX();
+                    yrd = event.getY();
+                    //タッチの座標を取得--緑
+                    xgr = event.getX();
+                    ygr = event.getY();
+                    //タッチの座標を取得--茶
+                    xbr = event.getX();
+                    ybr = event.getY();
+                    //タッチの座標を取得--青
+                    xbl = event.getX();
+                    ybl = event.getY();
 
-					battleSquare(); //-4-
-				}
-				//浮き上がるブロック
-				if(msFlag!=0){
-					if(x>0f && x<grid && y>blockLine1 && y<blockLine1+grid){
-						block.add(1);
+                    battleSquare(); //-4-
+                    //浮き上がるブロック
+                        block.add(1);
 
-					}
-					//x=gridのいくつ分かを調べてる
-					multiple = x/grid;
-					double d = Math.floor(multiple);	//小数点切り捨て
-					if(x/grid<=grid){
-						d = d+1d;		//0=１個目なので１を足す
-						Log.v("test", Double.toString(d));
-
-
-					}
-				}
-			}
+                        //x=gridのいくつ分かを調べる
+                        multiple1 = x / grid;
+                        double dX = Math.ceil(multiple1);    //小数点切り上げ
+                        multiple2 = y - blockLine1;
+                        multiple2 = multiple2 / grid;
+                        double dY = Math.ceil(multiple2);
+                        Log.v("test", Double.toString(dX));
+                        Log.v("test", Double.toString(dY));
+                    multi1 = Math.floor(multiple1);
+                    multi1 = multi1 * grid;
+                    multi2 = Math.floor(multiple2);
+                    multi2 = multi2 * grid;
+                    invalidate();
+                }
+            }
 			break;
 		case MotionEvent.ACTION_UP:
 			//敵ターンかどうか
