@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
 			magicSquare.turnEnemy=0;
 			magicSquare.i=0;
 			magicSquare.wait=-1;
-
+            magicSquare.blocks.clear();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

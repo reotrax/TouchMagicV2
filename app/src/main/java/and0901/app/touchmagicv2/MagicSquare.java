@@ -3,7 +3,6 @@ package and0901.app.touchmagicv2;
 import java.util.ArrayList;
 import java.util.Random;
 
-import android.R.color;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -11,18 +10,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
-import and0901.app.touchmagicv2.R;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.MediaController.MediaPlayerControl;
 import android.widget.Toast;
 
 public class MagicSquare extends View {
@@ -88,7 +81,7 @@ public class MagicSquare extends View {
 	String atk="", atkE="";
 	int i = 0;
 	//浮き上がるブロック
-	private ArrayList<Integer> block = new ArrayList<Integer>();
+	ArrayList<Block> blocks = new ArrayList<Block>();
 
 
 	//コンストラクタ
@@ -197,7 +190,17 @@ public class MagicSquare extends View {
 			//浮き上がるブロック描画
             if(touchNext!=1){
                 paint.setColor(Color.rgb(47, 79, 79));
-                canvas.drawRect(0+(int)multi1, blockLine1+(int)multi2, (int)multi1+grid, blockLine1+(int)multi2+grid, paint);
+                //アレイリストblocksの内容を
+                for(int i=1; i<blocks.size(); i++) {
+                    for(Block b : blocks) {
+                        double x1;
+                        double x2;
+                        x1 = b.getD1();
+                        x2 = b.getD2();
+                        canvas.drawRect((int) x1, blockLine1 + (int) x2, (int) x1 + grid, blockLine1 + (int) x2 + grid, paint);
+                        //canvas.drawRect(r, paint);
+                    }
+                }
             }
 			//サークル描画
 			paint.setColor(Color.RED);
@@ -251,7 +254,9 @@ public class MagicSquare extends View {
 		switch(event.getAction()){
 		case MotionEvent.ACTION_DOWN:
 			if(touchNext!=1){
-				//タッチの座標を取得
+                blocks.clear();
+                invalidate();
+                //タッチの座標を取得
 				x = event.getX();
 				y = event.getY();
 				al1.clear();
@@ -280,9 +285,8 @@ public class MagicSquare extends View {
                     ybl = event.getY();
 
                     battleSquare(); //-4-
-                    //浮き上がるブロック
-                        block.add(1);
 
+                    //浮き上がるブロック
                         //x=gridのいくつ分かを調べる
                         multiple1 = x / grid;
                         double dX = Math.ceil(multiple1);    //小数点切り上げ
@@ -295,6 +299,8 @@ public class MagicSquare extends View {
                     multi1 = multi1 * grid;
                     multi2 = Math.floor(multiple2);
                     multi2 = multi2 * grid;
+
+                    blocks.add(new Block(multi1, multi2));
                     invalidate();
                 }
             }
