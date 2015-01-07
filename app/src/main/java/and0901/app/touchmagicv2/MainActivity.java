@@ -71,10 +71,10 @@ public class MainActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			magicSquare.intHeroHP=1000;
-			magicSquare.intEnemyHP=1000;
-			magicSquare.heroHP="1000";
-			magicSquare.enemyHP="1000";
+			magicSquare.intHeroHP=400;
+			magicSquare.intEnemyHP=400;
+			magicSquare.heroHP="400";
+			magicSquare.enemyHP="400";
 			magicSquare.attack=0;
 			magicSquare.attackEnemy=0;
 			magicSquare.atk="";
