@@ -28,6 +28,7 @@ public class MagicSquare extends View {
 //	Bitmap monster2 = BitmapFactory.decodeResource(res, R.drawable.monster2size500);
 	Bitmap haikeiBattleA = BitmapFactory.decodeResource(res, R.drawable.a201208182021);
 	Bitmap haikeiBattleB = BitmapFactory.decodeResource(res, R.drawable.b201208182037);
+	Bitmap pict = BitmapFactory.decodeResource(res, R.drawable.nexus7wallpaper);
 	//音楽の読み込み
 //	MediaPlayer battle1 = MediaPlayer.create(getContext(), R.raw.dq1_battle1);
 //	SoundPool damage1 = new SoundPool(5, AudioManager.STREAM_MUSIC,0);
@@ -153,10 +154,11 @@ public class MagicSquare extends View {
 						canvas.drawColor(Color.GRAY);
 						break;
 				}
+				canvas.drawBitmap(pict,0,0,paint);
 ////////////ステータス
 				paint.setColor(Color.argb(200,0,0,0));
-				canvas.drawRect(width/40*10, height/80*0, width/40*30, height/80*10, paint);        //プレイヤー枠
-				canvas.drawRect(width/40*10, height/80*60, width/40*30, height/80*70, paint);    //敵枠
+				canvas.drawRect(width/40*10, height/80*0, width/40*30, height/80*11, paint);        //プレイヤー枠
+				canvas.drawRect(width/40*10, height/80*60, width/40*30, height/80*71, paint);    //敵枠
 				//HP／MP
 				paint.setTextSize(width / 15);
 				paint.setColor(Color.rgb(135, 206, 250));
@@ -192,7 +194,7 @@ public class MagicSquare extends View {
 				paint.setColor(Color.rgb(255, 215, 0));
 				RectF rectGaugePlayer = new RectF(gaugeStart, height/80*5, gaugeStart+gaugePlayer, height/80*6);//プレイヤー
 				canvas.drawRoundRect(rectGaugePlayer, width / 150, width / 150, paint);
-				paint.setColor(Color.rgb(255, 0, 0));
+				paint.setColor(Color.rgb(200, 0, 0));
 				RectF rectGaugeEnemyMax = new RectF(gaugeStart, height/80*65, gaugeStart+maxGaugePlayer, height/80*66);//敵
 				canvas.drawRoundRect(rectGaugeEnemyMax, width/150, width/150, paint);
 				paint.setColor(Color.rgb(255, 215, 0));
