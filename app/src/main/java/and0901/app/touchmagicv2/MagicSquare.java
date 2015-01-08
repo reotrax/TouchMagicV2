@@ -92,8 +92,8 @@ public class MagicSquare extends View {
 	private float xx,xxx,yy,yyy,zz,zzzz;
 	private double xxxx;
 	private float zzz;
-	private float 	gaugeStart, gaugeStart2, maxGaugePlayer=width-gaugeStart2;	//ゲージMAX時の量（画素数
-	private float 	gaugePlayer = maxGaugePlayer;	//最初はMaxHPをgaugePlayer（現状のHP）にする
+	private float 	gaugeStart, gaugeStart2, maxGaugePlayer;	//ゲージMAX時の量（画素数
+	private float 	gaugePlayer, gaugeEnemy;
 
 	//コンストラクタ
 	public MagicSquare(Context context) {
@@ -163,6 +163,7 @@ public class MagicSquare extends View {
 				canvas.drawText("HP: " + heroHP, width/40*11, height/80*4, paint);
 				canvas.drawText("HP: " + enemyHP, width/40*11, height/80*64, paint);
 				//HP／MPゲージ
+				//---プレイヤーゲージの計算
 				//HPゲージのスタートポイント
 				gaugeStart = width/40*11;
 				//HPゲージ（後ろ）--- １ドット＊HP最大値
@@ -171,6 +172,10 @@ public class MagicSquare extends View {
 				xx = maxGaugePlayer / startHeroHP;
 				xxx = xx * intHeroHP;
 				gaugePlayer = (float)xxx;
+				//---敵ゲージの計算
+				yy = maxGaugePlayer / startEnemyHP;
+				yyy = yy * intEnemyHP;
+				gaugeEnemy = (float)yyy;
 
 				//zz = Integer.parseInt(heroHP)/maxGaugePlayer;		//ゲージ１目盛りに相当する１ダメージ量の算出
 				Log.v("test", "xx : " + xx);
@@ -180,12 +185,6 @@ public class MagicSquare extends View {
 				Log.v("test", "gaugeStart : " + Double.toString(Math.floor(gaugeStart)));
 				Log.v("test", "maxGaugePlayer : " + Double.toString(Math.floor(maxGaugePlayer)));
 				Log.v("test", "gaugePlayer : " + Double.toString(Math.floor(gaugePlayer)));
-				//---プレイヤーゲージの目盛り計算
-//				if(touchNext!=0) {
-//					gaugePlayer = gaugePlayer * zzz;    //現状のゲージにダメージ受け後の割合を掛ける==>再描画時のゲージ量になる
-//					Log.v("test", "zzz : " + zzz);
-//				}
-				//---敵ゲージの計算
 				//---ゲージの表示
 				paint.setColor(Color.rgb(200,0,0));
 				RectF rectGaugePlayerMax = new RectF(gaugeStart, height/80*5, gaugeStart+maxGaugePlayer, height/80*6);//プレイヤーMAX
@@ -194,10 +193,10 @@ public class MagicSquare extends View {
 				RectF rectGaugePlayer = new RectF(gaugeStart, height/80*5, gaugeStart+gaugePlayer, height/80*6);//プレイヤー
 				canvas.drawRoundRect(rectGaugePlayer, width / 150, width / 150, paint);
 				paint.setColor(Color.rgb(255, 0, 0));
-				RectF rectGaugeEnemyMax = new RectF(width/40*11, height/80*65, width/40*29, height/80*66);//敵
+				RectF rectGaugeEnemyMax = new RectF(gaugeStart, height/80*65, gaugeStart+maxGaugePlayer, height/80*66);//敵
 				canvas.drawRoundRect(rectGaugeEnemyMax, width/150, width/150, paint);
 				paint.setColor(Color.rgb(255, 215, 0));
-				RectF rectGaugeEnemy = new RectF(width/40*11, height/80*65, width/40*29, height/80*66);//敵
+				RectF rectGaugeEnemy = new RectF(gaugeStart, height/80*65, gaugeStart+gaugeEnemy, height/80*66);//敵
 				canvas.drawRoundRect(rectGaugeEnemy, width/150, width/150, paint);
 				//ダメージ量
 				paint.setColor(Color.MAGENTA);
