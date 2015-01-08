@@ -64,9 +64,9 @@ public class MagicSquare extends View {
 	private double multi1 = 0d, multi2 = 0d;
 	//バトル関連
 	int startHeroHP = 400, startEnemyHP = 400;
-	int intHeroHP = startHeroHP, intEnemyHP = startEnemyHP;                //DBから読んでくる、自分と相手のLVに応じたHP。
+	int intHeroHP = startHeroHP, intEnemyHP = startEnemyHP; //現状HP。
 	int backHeroHP, backEnemyHP;            //計算用のHP
-	String heroHP = "400", enemyHP = "400";            //intHeroHP、intEnemyHPを入れる。
+	String heroHP = Integer.toString(intHeroHP), enemyHP = Integer.toString(intEnemyHP); //intHeroHP、intEnemyHPを入れる。
 	int wait = 0, waitCalc = 0, waitEnemy = 0, waitTotal = 0;    //入力から行動実施までの待ち時間
 	private String f = null;                //入力パターン表示用
 	int attack = 0, attackEnemy = 0;        //攻撃力
@@ -90,14 +90,14 @@ public class MagicSquare extends View {
 	private int eDamage;
 	private int soundID1;
 	private float xx,xxx,yy,yyy,zz,zzzz;
+	private double xxxx;
 	private float zzz;
-	private float maxGaugePlayer, gaugeStart, gaugeStart2;
-	private float gaugePlayer;
+	private float 	gaugeStart, gaugeStart2, maxGaugePlayer=width-gaugeStart2;	//ゲージMAX時の量（画素数
+	private float 	gaugePlayer = maxGaugePlayer;	//最初はMaxHPをgaugePlayer（現状のHP）にする
 
 	//コンストラクタ
 	public MagicSquare(Context context) {
 		super(context);
-		// TODO 自動生成されたコンストラクター・スタブ
 		init(context);
 	}
 
@@ -109,19 +109,14 @@ public class MagicSquare extends View {
 		paint.setAntiAlias(true);        //アンチエイリアス有効
 		onWindowFocusChanged(true);        //1-1 Viewのサイズを取得
 		battleFlag = 1;                    //０になるとバトル終了し、フィールド画面へ
-		heroHP = "400";    //初期値
-		enemyHP = "400";
 		comment1 = "入力してください";
-
 		//画像サイズの取得
 		eWidth = monster1.getWidth();
 		eHeight = monster1.getHeight();
 		//サウンドプールの読み込み
-
 		//BGM再生
 		//battle1.setLooping(true);
 		//battle1.start();
-
 		//機種の画面サイズを取得
 		//WindowManager wm = (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
 		//Display disp = 	wm.getDefaultDisplay();
@@ -132,7 +127,6 @@ public class MagicSquare extends View {
 	//1-1 Viewのサイズを取得
 	@Override
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onWindowFocusChanged(hasWindowFocus);
 
 		width = findViewById(R.id.MagicSquare).getWidth();
@@ -142,7 +136,6 @@ public class MagicSquare extends View {
 	//2- Viewに描画
 	@Override
 	protected void onDraw(Canvas canvas) {    //-2-
-		// TODO 自動生成されたメソッド・スタブ
 		super.onDraw(canvas);
 
 		//バトルに入っている場合
@@ -170,35 +163,29 @@ public class MagicSquare extends View {
 				canvas.drawText("HP: " + heroHP, width/40*11, height/80*4, paint);
 				canvas.drawText("HP: " + enemyHP, width/40*11, height/80*64, paint);
 				//HP／MPゲージ
+				//HPゲージのスタートポイント
 				gaugeStart = width/40*11;
-				gaugeStart2 = gaugeStart + gaugeStart;
-				maxGaugePlayer = width - gaugeStart2;	//ゲージMAX時の量（画素数）
-				gaugePlayer = maxGaugePlayer;	//最初はMaxHPをgaugePlayer（現状のHP）にする
-				//zz = Integer.parseInt(heroHP)/maxGaugePlayer;		//ゲージ１目盛りに相当する１ダメージ量の算出
+				//HPゲージ（後ろ）--- １ドット＊HP最大値
+				maxGaugePlayer = width-gaugeStart-gaugeStart;
+				//HP最大値の１HPに対するゲージのドット数の算出
+				xx = maxGaugePlayer / startHeroHP;
+				xxx = xx * intHeroHP;
+				gaugePlayer = (float)xxx;
 
+				//zz = Integer.parseInt(heroHP)/maxGaugePlayer;		//ゲージ１目盛りに相当する１ダメージ量の算出
+				Log.v("test", "xx : " + xx);
+				Log.v("test", "xxx : " + xxx);
 				Log.v("test", "width : " + Double.toString(width));
 				Log.v("test", "height : " + Double.toString(height));
 				Log.v("test", "gaugeStart : " + Double.toString(Math.floor(gaugeStart)));
 				Log.v("test", "maxGaugePlayer : " + Double.toString(Math.floor(maxGaugePlayer)));
-
-//				if(heroHP.equals(Integer.toString(intHeroHP))) {
-//				}else{
-//					//---float計算
-//					xx = width/40*11;			//ゲージ最小値（スタートの座標）
-//					xxx = xx + zzzz;			//ゲージ量になる
-//					maxGaugePlayer = xxx;					//減ったゲージの状態を保存して再描画時に使う
-//				}
-
+				Log.v("test", "gaugePlayer : " + Double.toString(Math.floor(gaugePlayer)));
 				//---プレイヤーゲージの目盛り計算
-				if(touchNext!=0) {
-					gaugePlayer = gaugePlayer * zzz;    //現状のゲージにダメージ受け後の割合を掛ける==>再描画時のゲージ量になる
-					Log.v("test", "zzz : " + zzz);
-				}
-
+//				if(touchNext!=0) {
+//					gaugePlayer = gaugePlayer * zzz;    //現状のゲージにダメージ受け後の割合を掛ける==>再描画時のゲージ量になる
+//					Log.v("test", "zzz : " + zzz);
+//				}
 				//---敵ゲージの計算
-
-//				yy = width - xx -xx;	//
-//				yy/200;					//ゲージ最大値に対する
 				//---ゲージの表示
 				paint.setColor(Color.rgb(200,0,0));
 				RectF rectGaugePlayerMax = new RectF(gaugeStart, height/80*5, gaugeStart+maxGaugePlayer, height/80*6);//プレイヤーMAX
@@ -282,21 +269,14 @@ public class MagicSquare extends View {
 				canvas.drawCircle(c4x, c4y, cRadius, paint);    //あお
 ////////////コメント
 				//枠線
-//				paint.setColor(Color.WHITE);
-//				RectF rect = new RectF(0, blockLine2, width, height);
-//				canvas.drawRoundRect(rect, width / 70, width / 70, paint);
-				paint.setColor(Color.argb(200,0,0,0));
-				RectF rect2 = new RectF(0, height/80*37, width, height/80*43);
-				canvas.drawRoundRect(rect2, width / 70, width / 70, paint);
-				paint.setColor(Color.WHITE);
-				paint.setTextSize(width / 18);
-				//バトル終了してフィールドの描画
-				//if(battleFlag!=1){
-				//canvas.drawText(comment1, grid, blockLine2+grid, paint);
-				//}
-				canvas.drawText(comment1, width/8, height/80*41, paint);
-				//パターン入力後、下部にテキストを表示、上部のHP／MPの増減を表示。
-
+				if(comment1.equals("入力ミスです")||comment1.equals("入力してください")) {
+					paint.setColor(Color.argb(200, 0, 0, 0));
+					RectF rect2 = new RectF(0, height / 80 * 37, width, height / 80 * 43);
+					canvas.drawRoundRect(rect2, width / 70, width / 70, paint);
+					paint.setColor(Color.WHITE);
+					paint.setTextSize(width / 18);
+					canvas.drawText(comment1, width / 8, height / 80 * 41, paint);
+				}
 				break;
 			case 2:
 				//バトル画面以外を描画
@@ -312,7 +292,6 @@ public class MagicSquare extends View {
 	//「キャンセル」か「OK」を押すと終了する
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {    //-3-
-		// TODO 自動生成されたメソッド・スタブ
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				blocks.clear();
@@ -739,8 +718,6 @@ public class MagicSquare extends View {
 			//ダメージ量
 			atkE = "- " + Integer.toString(attackEnemy);
 			atk = "";
-			//ダメージ受けた後のHPがMAXの何％か計算（小数点切り捨て）
-			zzz = intHeroHP / startHeroHP;
 			//プレイヤーのコメント欄---残りwait数
 			wait = wait - waitEnemy;
 			commentTop1 = "wait... " + Integer.toString(wait);
@@ -774,8 +751,6 @@ public class MagicSquare extends View {
 			//双方のダメージ量
 			atkE = "- " + Integer.toString(attackEnemy);
 			atk = "- " + Integer.toString(attack);
-			//ダメージ受けた後のHPがMAXの何％か計算（小数点切り捨て）
-			zzz = intHeroHP/startHeroHP;
 			//双方のコメント欄---行動パターンの表示
 			commentTop1 = commentHero;
 			commentTop2 = commentEnemy;
